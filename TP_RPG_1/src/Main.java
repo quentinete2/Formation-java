@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Main {
 
@@ -7,29 +8,25 @@ public class Main {
     static Battler currentTarget;
 
     // Player initialization
-    public static void initData(List<Battler> speed) {
+    public static void initData(List<Battler> perso) {
         Battler player = new Battler();
         player.name = "robert";
         player.power(50, 100);
         player.hp(80, 500);
         player.GS(80, 100);
-        speed.add(player);
+        perso.add(player);
 
         Battler enemy = new Battler();
         enemy.name = "typhon";
         enemy.power(50, 100);
         enemy.hp(80, 500);
         enemy.GS(80, 100);
-        speed.add(enemy);
+        perso.add(enemy);
 
-        System.out.println("Le joueur a " + player.hp + " HP.");
-        System.out.println("Le joueur s'appelle " + player.name);
-        System.out.println("Le joueur a " + player.power + " de puissance.");
-        System.out.println("Le joueur a " + player.speed + " de vitesse.");
-        System.out.println("L'enemy a " + enemy.hp + " HP.");
-        System.out.println("L'enemy s'appelle " + enemy.name);
-        System.out.println("L'enemy a " + enemy.power + " de puissance.");
-        System.out.println("L'enemy a " + enemy.speed + " de vitesse.");
+        System.out.println("=============================================================================================");
+        System.out.println("Le joueur s'appelle " + player.name +", il a " + player.hp + " HP, " + player.power + " de puissance, " + player.speed + " de vitesse.");
+        System.out.println("L' enemy s'appelle " + enemy.name +", il a " + enemy.hp + " HP, " + enemy.power + " de puissance, " + enemy.speed + " de vitesse.");
+        System.out.println("=============================================================================================");
     }
 
     //Who plays first
@@ -58,9 +55,22 @@ public class Main {
     }
 
     // Diplay Winner
-    public static void displayWinner() {
-        System.out.println("Le vainqueur est : " + currentPlayer.name);
+    public static void displayWinner(List<Team> teams) {
+        System.out.println("Le vainqueur est : " + currentPlayer.name + " de l'équipe " + getTeamName(teams, currentPlayer));
     }
+
+
+    public static String getTeamName(List<Team> teams, Battler player) {
+        for (Team team : teams) {
+            for (Battler battler : team.battlers) {
+                if (battler == player) {
+                    return team.name;
+                }
+            }
+        }
+        return "Aucune équipe";
+    }
+
 
     // Change player
     public static void newPlayer(List<Battler> speed) {
@@ -73,13 +83,49 @@ public class Main {
         }
     }
 
+    //create team
+    public static List<Team> createTeams(List<Battler> battlers) {
+        // Initialization name
+        Team team1 = new Team();
+        team1.name = "white";
+        Team team2 = new Team();
+        team2.name = "black";
+
+        // add player in team
+        team1.addBattler(battlers.get(0));
+        team2.addBattler(battlers.get(1));
+
+        //print team
+        System.out.println("Équipe 1 : " + team1.name);
+        System.out.println("Équipe 2 : " + team2.name);
+
+        List<Team> teams = new ArrayList<>();
+        teams.add(team1);
+        teams.add(team2);
+
+        return teams;
+    }
+
     public static void main(String[] args) {
         // Initialization
-        List<Battler> speed = new ArrayList<>();
-        initData(speed);
+        List<Battler> perso = new ArrayList<>();
+        initData(perso);
+
+        // Initialization teams
+        // Create teams
+        List<Team> teams = createTeams(perso);
+        System.out.println("=============================================");
+        System.out.println("Les équipes sont préte :");
+
+        System.out.println(" ");
+        System.out.println("les équipes sont :");
+        for (Team team : teams) {
+            team.displayTeamInfo();
+            System.out.println("=============================================");
+        }
 
         // Determine who starts
-        firstPlayer(speed);
+        firstPlayer(perso);
 
         // Game loop
         while (true) {
@@ -90,12 +136,12 @@ public class Main {
 
             // Check if the game is finished
             if (testWinner()) {
-                displayWinner();
+                displayWinner(teams);
                 break;
             }
 
             // Move on to the next player
-            newPlayer(speed);
+            newPlayer(perso);
         }
     }
 }
