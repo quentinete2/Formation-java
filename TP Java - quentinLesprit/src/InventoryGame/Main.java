@@ -13,6 +13,11 @@ public class Main {
         inventory.addItem("grenade", 5);
         inventory.addItem("épée", 1);
 
+        //boucle de test
+        for (int i = 1; i <= 10; i++) {
+            inventory.addItem("test "+i , 10);
+        }
+
         // Affiché l'inventaire
         inventory.displayItems();
 
